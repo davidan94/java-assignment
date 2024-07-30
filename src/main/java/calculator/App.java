@@ -1,10 +1,11 @@
 package calculator;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class App {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+        Queue<Integer> opArr = new LinkedList<>(); // Step 2: 연산 결과를 저장하는 큐
 
         while (true) {
             System.out.print("첫 번째 숫자를 입력하세요: ");
@@ -44,7 +45,8 @@ public class App {
                 continue;
             }
 
-            System.out.println("결과 = " + result + "\n");
+            opArr.add(result); // Step 2: 연산 결과 저장
+            System.out.println("결과 = " + opArr.peek() + "\n");
 
             System.out.println("더 계산하시겠습니까? (exit 입력 시 종료)");
             if (sc.nextLine().equals("exit")) {
