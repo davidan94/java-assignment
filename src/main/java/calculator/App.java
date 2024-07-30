@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
-        Calculator calculator = new Calculator(); // Calculator 인스턴스 생성
+        Calculator calculator = new Calculator();
         Scanner sc = new Scanner(System.in);
 
         while (true) {
@@ -17,10 +17,20 @@ public class App {
             char operator = sc.next().charAt(0);
 
             try {
-                double result = calculator.calculate(num1, num2, operator); // 계산 수행
+                double result = calculator.calculate(num1, num2, operator);
                 System.out.println("연산 결과: " + result);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
+            }
+
+            System.out.println("삭제하시겠습니까? (yes 입력 시 삭제)");
+            if (sc.next().equals("yes")) {
+                try {
+                    calculator.removeResult(); // 결과 삭제 메서드 호출
+                    System.out.println("가장 먼저 저장된 결과가 삭제되었습니다.");
+                } catch (NoSuchElementException e) {
+                    System.out.println(e.getMessage());
+                }
             }
 
             System.out.println("더 계산하시겠습니까? (exit 입력 시 종료)");
