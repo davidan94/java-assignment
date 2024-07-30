@@ -48,6 +48,15 @@ public class App {
             opArr.add(result); // Step 2: 연산 결과 저장
             System.out.println("결과 = " + opArr.peek() + "\n");
 
+            // Step 3: 가장 먼저 저장된 연산 결과를 삭제할지 묻는 기능 추가
+            System.out.println("가장 먼저 저장된 연산 결과를 삭제하시겠습니까? (remove 입력 시 삭제)");
+
+            if (sc.nextLine().equals("remove")) { // Step 3: 결과 삭제 기능 추가
+                if (!opArr.isEmpty()) {
+                    System.out.println("remove = " + opArr.poll());
+                }
+            }
+
             System.out.println("더 계산하시겠습니까? (exit 입력 시 종료)");
             if (sc.nextLine().equals("exit")) {
                 break;
