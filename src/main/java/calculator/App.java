@@ -26,8 +26,17 @@ public class App {
             System.out.println("삭제하시겠습니까? (yes 입력 시 삭제)");
             if (sc.next().equals("yes")) {
                 try {
-                    calculator.removeResult(); // 결과 삭제 메서드 호출
+                    calculator.removeResult();
                     System.out.println("가장 먼저 저장된 결과가 삭제되었습니다.");
+                } catch (NoSuchElementException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+
+            System.out.println("결과를 조회하시겠습니까? (yes 입력 시 조회)");
+            if (sc.next().equals("yes")) {
+                try {
+                    calculator.inquiryResults(); // 결과 조회 메서드 호출
                 } catch (NoSuchElementException e) {
                     System.out.println(e.getMessage());
                 }
