@@ -57,6 +57,16 @@ public class App {
                 }
             }
 
+            // Step 4: 저장된 연산 결과 조회 기능 추가
+            System.out.println("저장된 연산결과를 조회하시겠습니까? (inquiry 입력 시 조회)");
+            if (sc.nextLine().equals("inquiry")) { // Step 4: 결과 조회 기능 추가
+                int index = 1;
+                for (Integer i : opArr) { // 향상된 for문 사용
+                    System.out.println(index + "번째 결과는 = " + i);
+                    index++;
+                }
+            }
+
             System.out.println("더 계산하시겠습니까? (exit 입력 시 종료)");
             if (sc.nextLine().equals("exit")) {
                 break;
