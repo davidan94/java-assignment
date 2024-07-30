@@ -38,7 +38,6 @@ public class Calculator {
         return results;
     }
 
-    // 결과 삭제 메서드
     public void removeResult() {
         if (results.isEmpty()) {
             throw new NoSuchElementException("삭제할 연산 결과가 없습니다.");
@@ -46,6 +45,7 @@ public class Calculator {
         results.poll();
     }
 
+    // 결과 조회 메서드
     public void inquiryResults() {
         if (results.isEmpty()) {
             throw new NoSuchElementException("조회할 연산 결과가 없습니다.");
