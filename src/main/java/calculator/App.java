@@ -3,84 +3,123 @@ package calculator;
 import java.util.Scanner;
 
 public class App {
+    static Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) {
-        Calculator calculator = new Calculator();
-        Scanner sc = new Scanner(System.in);
+        //Calculator 생성
+        ArithmeticCalculator<Double> arithmeticCalculator = new ArithmeticCalculator<>();
+        CircleCalculator circleCalculator = new CircleCalculator();
 
-        while (true) {
-            System.out.println("계산을 선택하세요: 1) 사칙연산 2) 원의 계산");
-            int choice = sc.nextInt();
-
-            if (choice == 1) {
-                System.out.print("첫 번째 숫자를 입력하세요:");
-                int num1 = sc.nextInt();
-                System.out.print("두 번째 숫자를 입력하세요:");
-                int num2 = sc.nextInt();
-
-                System.out.print("사칙연산 기호를 입력하세요: ");
-                char operator = sc.next().charAt(0);
-
-                try {
-                    double result = calculator.calculate(num1, num2, operator);
-                    System.out.println("연산 결과: " + result);
-                } catch (IllegalArgumentException e) {
-                    System.out.println(e.getMessage());
+        String flag = "";
+        while (!flag.equals("exit")) {
+            //작업 수행 입력
+            System.out.println("어떤 작업을 수행하시겠습니까? [사칙연산], [원의 넓이]");
+            boolean isValid = switch (sc.nextLine().trim()) {
+                case "사칙연산" -> toArithmetic(arithmeticCalculator);
+                case "원의 넓이" -> toCircle(circleCalculator);
+                default -> {
+                    System.out.println("잘못된 입력입니다. \"사칙연산\" 또는 \"원의 넓이\" 를 입력해주세요\n");
+                    yield false;
                 }
+            };
 
-                System.out.println("삭제하시겠습니까? (yes 입력 시 삭제)");
-                if (sc.next().equals("yes")) {
-                    try {
-                        calculator.removeResult();
-                        System.out.println("가장 먼저 저장된 결과가 삭제되었습니다.");
-                    } catch (NoSuchElementException e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
-
-                System.out.println("결과를 조회하시겠습니까? (yes 입력 시 조회)");
-                if (sc.next().equals("yes")) {
-                    try {
-                        calculator.inquiryResults();
-                    } catch (NoSuchElementException e) {
-                        System.out.println(e.getMessage());
-                    }
-                }
-            } else if (choice == 2) {
-                System.out.print("반지름을 입력하세요:");
-                double radius = sc.nextDouble();
-
-                System.out.print("계산할 항목을 선택하세요: 1) 넓이 2) 둘레 3) 체적 4) 부피: ");
-                int circleChoice = sc.nextInt();
-
-                double result = 0;
-                switch (circleChoice) {
-                    case 1:
-                        result = Math.PI * radius * radius;
-                        System.out.println("원의 넓이: " + result);
-                        break;
-                    case 2:
-                        result = 2 * Math.PI * radius;
-                        System.out.println("원의 둘레: " + result);
-                        break;
-                    case 3:
-                        result = (4 / 3) * Math.PI * Math.pow(radius, 3);
-                        System.out.println("구의 체적: " + result);
-                        break;
-                    case 4:
-                        result = Math.PI * Math.pow(radius, 2) * radius;
-                        System.out.println("원기둥의 부피: " + result);
-                        break;
-                    default:
-                        System.out.println("올바른 선택이 아닙니다.");
-                }
-                calculator.getResults().add(result); // 결과를 저장
-            }
-
-            System.out.println("더 계산하시겠습니까? (exit 입력 시 종료)");
-            if (sc.next().equals("exit")) {
-                break;
+            if (isValid) {
+                System.out.println("계산하시겠습니까? (exit 입력 시 종료)");
+                flag = sc.nextLine().trim();
             }
         }
-        sc.close();
+    }
+
+    //[사칙연산]
+    private static boolean toArithmetic(ArithmeticCalculator arithmeticCalculator) {
+        System.out.println("사칙연산 계산기\n");
+        //사칙연산에 필요한 입력
+        double firstNumberInput, secondNumberInput;
+        char operatorInput;
+        try {
+            //첫 번째 숫자
+            System.out.print("첫 번째 숫자를 입력하세요: ");
+            firstNumberInput = Double.parseDouble(sc.nextLine().trim());
+            //두 번째 숫자
+            System.out.print("두 번째 숫자를 입력하세요: ");
+            secondNumberInput = Double.parseDouble(sc.nextLine().trim());
+
+            //사용자로부터 사칙연산 기호 입력
+            System.out.print("사칙연산 기호를 입력하세요: ");
+            operatorInput = sc.nextLine().trim().charAt(0);
+        } catch (NumberFormatException e) {
+            System.out.println("잘못된 입력입니다. 숫자를 입력하세요.");
+            return false;
+        } catch (InputMismatchException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+        arithmeticCalculator.toArithmeticCalculator(firstNumberInput, secondNumberInput, operatorInput);
+
+        //연산 결과값 출력 및 저장
+        double calculate;
+        try {
+            calculate = arithmeticCalculator.calculate();
+            arithmeticCalculator.addCalculation(calculate);
+            System.out.println("[사칙연산] 결과 = " + calculate + "\n");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+        //삭제 여부 입력
+        System.out.println("[사칙연산]가장 먼저 저장된 연산 결과를 삭제하시겠습니까? (remove 입력 시 삭제)");
+        try {
+            String removeInput = sc.nextLine().trim();
+            if (removeInput.equals("remove")) {
+                arithmeticCalculator.opRemoveResult();
+            }
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+        }
+
+        //전체 조회 여부 입력
+        System.out.println("[사칙연산]저장된 연산결과를 조회하시겠습니까? (inquiry 입력 시 조회)");
+        try {
+            String removeInput = sc.nextLine().trim();
+            if (removeInput.equals("inquiry")) {
+                arithmeticCalculator.opInquiryResults(calculate);
+            }
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+        }
+        return true;
+    }
+
+    //[원의 넓이]
+    private static boolean toCircle(CircleCalculator circleCalculator) {
+        System.out.println("원의 넓이 계산기\n");
+
+        double radius;
+        try {
+            //사용자로부터 반지름 입력
+            System.out.print("반지름을 입력하세요: ");
+            radius = Double.parseDouble(sc.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("잘못된 입력입니다. 숫자를 입력하세요.");
+            return false;
+        }
+
+        circleCalculator.toCircleCalculator(radius);
+
+        //원의 넓이 구한 후 출력 및 저장 후 전체 조회
+        try {
+            double area = circleCalculator.calculate();
+            circleCalculator.addCalculation(area);
+            System.out.println("[원의 넓이]결과 = " + area + "\n");
+            circleCalculator.opInquiryResults();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return false;
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+        }
+        return true;
     }
 }
